@@ -3,8 +3,10 @@ version: "3.7"
 services:
   database:
     image: postgres
+    container_name: etl-database
     volumes:
       - ./example_schema.sql:/docker-entrypoint-initdb.d/example_schema.sql
+      - ./postgres_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=codetest
       - POSTGRES_USER=codetest
@@ -16,10 +18,28 @@ services:
       retries: 3
     ports:
       - 5432:5432
+    networks:
+      - etl-network
 
   app:
     image: app
-    build: src
-    command: ["./main.py"]
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: etl-app
     volumes:
       - ./data:/data
+    depends_on:
+      - database
+    environment:
+      DB_USER: codetest
+      DB_PASSWORD: password
+      DB_HOST: database
+      DB_PORT: 5432
+      DB_NAME: codetest
+    networks:
+      - etl-network
+
+networks:
+  etl-network:
+    driver: bridge

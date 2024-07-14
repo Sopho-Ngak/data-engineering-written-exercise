@@ -1,5 +1,6 @@
-.DS_Store
-.env
+.git
+*.md
+.cache
 env
 venv
 __pycache__
