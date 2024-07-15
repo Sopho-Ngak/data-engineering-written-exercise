@@ -7,7 +7,7 @@ import argparse
 # import json
 # import sqlalchemy
 
-from src.etl import ETL
+from src.etl import ETL, log
 
 LIST_COMMANDS = [
     "run_etl",
@@ -35,7 +35,7 @@ if __name__ == '__main__':
     elif args.command_name == "export_json":
         etl.export_json_from_postgres()
     else:
-        print("Invalid command. Please select from the following commands: ", LIST_COMMANDS)
+        log.error("Invalid command. Please select from the following commands: ", LIST_COMMANDS)
         sys.exit(1)
 
 
